@@ -1,8 +1,12 @@
 const { HolidayAPI } = require('holidayapi');
 const { User } = require('../models/user');
 const { Calendar } = require('../models/Calendardynamic');
+
 const Joi = require('joi');
 
+
+
+//dibawah ini calendar dynamic ya ges ya
 exports.insertCalendar = async (req, res) => {
   const { email, dateStart, dateEnd, type, information } = req.body;
 
@@ -147,6 +151,56 @@ exports.getCalendarsByOwner = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

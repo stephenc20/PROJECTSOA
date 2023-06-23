@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth');
 const holidayRoutes = require('./routes/query');
 const accountRoutes = require('./routes/account');
 const dynamicRoutes = require('./routes/cons_dynamic');
+const fixedRoutes = require('./routes/cons_fixed');
 
 
 const app=express();
@@ -19,6 +20,7 @@ app.use('/api', authRoutes);
 app.use('/api', holidayRoutes);
 app.use('/api', accountRoutes);
 app.use('/api', dynamicRoutes);
+app.use('/api', fixedRoutes);
 
 
 
