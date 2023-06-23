@@ -1,4 +1,3 @@
-// Berikut adalah code model Calendardynamic yang telah diperbaiki
 const { Sequelize, DataTypes } = require('sequelize');
 const db = require('../config/sequelize');
 const { User } = require('./user');

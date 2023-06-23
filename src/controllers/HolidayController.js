@@ -55,6 +55,102 @@ exports.insertCalendar = async (req, res) => {
   }
 };
 
+exports.updateCalendar = async (req, res) => {
+  const { calendarId, email, dateStart, dateEnd, type, information } = req.body;
+
+  // Validasi input menggunakan Joi
+  const schema = Joi.object({
+    calendarId: Joi.number().required(),
+    email: Joi.string().email().required(),
+    dateStart: Joi.date().iso().required(),
+    dateEnd: Joi.date().iso().required(),
+    type: Joi.string().valid('LIBUR', 'KERJA').required(),
+    information: Joi.string().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  try {
+    // Cari user berdasarkan email
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Cari kalender berdasarkan calendarId
+    const calendar = await Calendar.findOne({ where: { id: calendarId } });
+
+    if (!calendar) {
+      return res.status(404).json({ message: 'Calendar not found' });
+    }
+
+    // Perbarui data kalender
+    calendar.owner = user.id;
+    calendar.dateStart = dateStart;
+    calendar.dateEnd = dateEnd;
+    calendar.type = type;
+    calendar.information = information;
+    await calendar.save();
+
+    res.json({
+      message: 'Data kalender berhasil diperbarui',
+      calendar,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteCalendar = async (req, res) => {
+  const { calendarId } = req.params;
+
+  try {
+    // Cari kalender berdasarkan calendarId
+    const calendar = await Calendar.findOne({ where: { id: calendarId } });
+
+    if (!calendar) {
+      return res.status(404).json({ message: 'Calendar not found' });
+    }
+
+    // Hapus kalender
+    await calendar.destroy();
+
+    res.json({ message: 'Data kalender berhasil dihapus' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getCalendarsByOwner = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Cari user berdasarkan email
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Cari semua kalender yang dimiliki oleh user berdasarkan owner ID
+    const calendars = await Calendar.findAll({ where: { owner: user.id }});
+
+    res.json({
+      message: 'Data kalender berhasil ditemukan',
+      calendars,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
 exports.checkHoliday = async (req, res) => {
   const { day, month } = req.body;
   const key = '495c3676-6c0a-4980-aa30-e07c5ac1e145';
