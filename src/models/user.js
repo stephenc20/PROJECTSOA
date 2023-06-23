@@ -33,7 +33,7 @@ const User = db.define(
     },
     pkey: {
       type: Sequelize.STRING(100),
-      allowNull: false,
+      allowNull: true,
     },
     quota: {
       type: Sequelize.INTEGER(25),

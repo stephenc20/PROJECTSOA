@@ -40,6 +40,50 @@ exports.loginUser = async (req, res) => {
 };
 
 
+exports.registerUser = async (req, res) => {
+    const { email, password } = req.body;
+    const accType = 1; // Set the account type to 1
+  
+    try {
+      // Check if the user already exists
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+  
+      // Create a new user
+      const newUser = await User.create({ email, password, acc_type: accType });
+  
+      res.json({ message: 'User registered successfully', user: newUser });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+
+
+
+exports.addBalance = async (req, res) => {
+    const { email, amount } = req.body;
+  
+    try {
+      const user = await User.findOne({ where: { email } });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Add the balance to the user's current balance
+      user.saldo += amount;
+      await user.save();
+  
+      res.json({ message: 'Balance added successfully', saldo: user.saldo });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
+
 
 exports.upgradeAccount = async (req, res) => {
     try {
