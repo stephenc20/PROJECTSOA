@@ -21,6 +21,10 @@ const User = db.define(
       type: Sequelize.STRING(100),
       allowNull: false,
     },
+    saldo: {
+      type: Sequelize.INTEGER(25),
+      allowNull: true,
+    },
     pkey: {
       type: Sequelize.STRING(100),
       allowNull: false,

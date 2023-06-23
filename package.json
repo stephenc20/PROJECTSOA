@@ -28,5 +28,6 @@
   "bugs": {
     "url": "https://github.com/Gydralionth/Project_SOA_Kalender/issues"
   },
-  "homepage": "https://github.com/Gydralionth/Project_SOA_Kalender#readme"
+  "homepage": "https://github.com/Gydralionth/Project_SOA_Kalender#readme",
+  "devDependencies": {}
 }
