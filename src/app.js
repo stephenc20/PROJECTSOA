@@ -4,6 +4,7 @@ const routes = require('./routes/index')
 const authRoutes = require('./routes/auth');
 const holidayRoutes = require('./routes/query');
 const accountRoutes = require('./routes/account');
+const dynamicRoutes = require('./routes/cons_dynamic');
 
 
 const app=express();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api', authRoutes);
 app.use('/api', holidayRoutes);
 app.use('/api', accountRoutes);
+app.use('/api', dynamicRoutes);
 
 
 

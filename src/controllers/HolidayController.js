@@ -1,4 +1,59 @@
 const { HolidayAPI } = require('holidayapi');
+const { User } = require('../models/user');
+const { Calendar } = require('../models/Calendardynamic');
+const Joi = require('joi');
+
+exports.insertCalendar = async (req, res) => {
+  const { email, dateStart, dateEnd, type, information } = req.body;
+
+  // Validasi input menggunakan Joi
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    dateStart: Joi.date().iso().required(),
+    dateEnd: Joi.date().iso().required(),
+    type: Joi.string().valid('LIBUR', 'KERJA').required(),
+    information: Joi.string().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+
+  const key = '495c3676-6c0a-4980-aa30-e07c5ac1e145';
+  const holidayApi = new HolidayAPI({ key });
+
+  try {
+    // Cari user berdasarkan email
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Menyimpan data kalender ke dalam database
+    const calendar = await Calendar.create({
+      owner: user.id, // Use email as owner
+      dateStart,
+      dateEnd,
+      type,
+      information,
+    });
+
+    // Retrieve the created calendar with the owner's email
+    const createdCalendar = await Calendar.findOne({
+      where: { id: calendar.id },
+      include: [{ model: User, attributes: ['email'] }],
+    });
+
+    res.json({
+      message: 'Data kalender berhasil disimpan',
+      calendar: createdCalendar,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 exports.checkHoliday = async (req, res) => {
   const { day, month } = req.body;
@@ -86,3 +141,5 @@ exports.checkHolidayByRegion = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+

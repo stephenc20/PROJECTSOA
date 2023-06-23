@@ -94,3 +94,49 @@ exports.upgradeAccount = async (req, res) => {
         });
     }
 };
+
+
+exports.checkUserData = async (req, res) => {
+    const {
+        email
+    } = req.body;
+
+    try {
+        const user = await User.findOne({
+            where: {
+                email
+            },
+            include: [AccountType] // Sertakan informasi AccountType pada pengguna
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
+        }
+
+        const {
+            acc_type,
+            quota
+        } = user;
+
+        let accountTypeText = '';
+        if (acc_type === 1) {
+            accountTypeText = 'FREE';
+        } else if (acc_type === 2) {
+            accountTypeText = 'PREMIUM';
+        } else {
+            accountTypeText = 'UNKNOWN';
+        }
+
+        res.json({
+            email: user.email,
+            account_type: accountTypeText,
+            quota
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};

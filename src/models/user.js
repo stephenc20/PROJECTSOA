@@ -5,10 +5,15 @@ const {AccountType} = require('./account_type');
 const User = db.define(
   'User',
   {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     email: {
       type: Sequelize.STRING(200),
       allowNull: false,
-      primaryKey: true,
     },
     acc_type: {
       type: Sequelize.INTEGER,
@@ -43,19 +48,6 @@ const User = db.define(
   {
     tableName: 'user',
     timestamps: true,
-    indexes: [
-      {
-        name: 'PRIMARY',
-        unique: true,
-        using: 'BTREE',
-        fields: [{ name: 'email' }],
-      },
-      {
-        name: 'acc_type_on_user',
-        using: 'BTREE',
-        fields: [{ name: 'acc_type' }],
-      },
-    ],
   }
 );
 
