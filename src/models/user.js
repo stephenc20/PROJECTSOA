@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../config/sequelize');
+const {AccountType} = require('./account_type');
 
 const User = db.define(
   'User',
@@ -30,8 +31,8 @@ const User = db.define(
       allowNull: false,
     },
     quota: {
-      type: Sequelize.TEXT,
-      allowNull: false,
+      type: Sequelize.INTEGER(25),
+      allowNull: true,
     },
     valid_until: {
       type: Sequelize.DATE,
@@ -57,5 +58,8 @@ const User = db.define(
     ],
   }
 );
+
+User.belongsTo(AccountType, { foreignKey: 'acc_type' });
+
 
 module.exports = {User};

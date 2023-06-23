@@ -5,6 +5,8 @@ exports.checkHoliday = async (req, res) => {
   const key = '495c3676-6c0a-4980-aa30-e07c5ac1e145';
   const holidayApi = new HolidayAPI({ key });
 
+  const { email } = req;
+
   try {
     const response = await holidayApi.holidays({
       country: 'ID',
@@ -14,6 +16,7 @@ exports.checkHoliday = async (req, res) => {
     });
 
     const holidays = response.holidays.map(holiday => ({
+        user : `Selamat Datang ${email}`,
         day : holiday.day,
         name: holiday.name,
         date: holiday.date,
@@ -40,7 +43,7 @@ exports.checkWork = async (req, res) => {
       month,
       year,
     });
-//
+
     const isHoliday = holidayResponse.holidays.length > 0;
     const message = isHoliday ? 'Hari ini adalah hari libur' : 'Hari ini adalah hari kerja';
     const { email } = req;

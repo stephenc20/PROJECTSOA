@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { Sequelize, DataTypes, Op } = require('sequelize');
+// const HolidayController = require('../controllers/HolidayController');
+const AuthController = require('../controllers/AuthController');
+// const { verifyToken } = require('../middlewares/authMiddleware');
 
-module.exports = (seq,m,authMiddleware) => {
-    router.get("quota/", async function(){
-        let q = req.body;
-        res.status(200).send({
-        });
-    });
-    router.get("data/", async function(){
-        let q = req.body;
-        res.status(200).send({
-        });
-    });
-}
+router.put('/a/upgrade', AuthController.upgradeAccount);
+// router.get('/q/free', verifyToken, HolidayController.checkHoliday);
+// router.get('/q/work', verifyToken, HolidayController.checkWork);
+// router.get('/q/diff', verifyToken, HolidayController.checkHolidayByRegion);
+
+
+
+
+module.exports = router;
+
+
