@@ -6,7 +6,7 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 
 router.put('/a/upgrade', AuthController.upgradeAccount);
 router.get('/a/data', AuthController.checkUserData);
-router.post('/a/topup',  AuthController.addBalance);
+router.put('/a/topup',  AuthController.addBalance);
 
 // router.get('/q/free', verifyToken, HolidayController.checkHoliday);
 // router.get('/q/work', verifyToken, HolidayController.checkWork);
