@@ -64,25 +64,29 @@ exports.registerUser = async (req, res) => {
 
 
 
-exports.addBalance = async (req, res) => {
+  exports.addBalance = async (req, res) => {
     const { email, amount } = req.body;
-  
-    try {
-      const user = await User.findOne({ where: { email } });
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-  
-      // Add the balance to the user's current balance
-      user.saldo += amount;
-      await user.save();
-  
-      res.json({ message: 'Balance added successfully', saldo: user.saldo });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-  };
+
+    // Convert the amount to a numeric value
+    const numericAmount = parseInt(amount);
+
+    // Update the user's balance in the database by adding the numeric amount
+    const updatedSaldo = user.saldo + numericAmount;
+    user.saldo = updatedSaldo;
+    await user.save();
+
+    res.json({ message: 'Balance added successfully', saldo: updatedSaldo });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 
@@ -128,10 +132,17 @@ exports.upgradeAccount = async (req, res) => {
         const newAccountType = 2; // Menentukan account type baru
         user.acc_type = newAccountType;
         user.saldo -= requiredBalance;
+
+
+        if (newAccountType === 2) {
+            user.quota = 50;
+        }
+
         await user.save();
 
         res.json({
-            message: 'Account upgraded successfully'
+            message: 'Account upgraded successfully',
+            kuota : user.quota
         });
     } catch (error) {
         res.status(500).json({
