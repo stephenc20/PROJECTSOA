@@ -22,7 +22,8 @@ exports.loginUser = async (req, res) => {
 
         if (user && user.password === password) {
             const token = jwt.sign({
-                email: user.email
+                email: user.email,
+                account_type: user.acc_type  
             }, 'secret_key');
             res.json({
                 token

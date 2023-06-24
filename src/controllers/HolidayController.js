@@ -35,6 +35,20 @@ exports.insertCalendar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+       // Periksa account_type dari user
+       const { acc_type, quota } = user;
+       if (acc_type !== 1 && acc_type !== 2) {
+         return res.status(403).json({ message: 'Akses tidak diizinkan' });
+       }
+   
+       if (acc_type === 2) {
+         if (quota <= 0) {
+           return res.status(403).json({ message: 'Kuota sudah habis' });
+         }
+         user.quota = user.quota - 1;
+         await user.save();
+       }
+
     // Menyimpan data kalender ke dalam database
     const calendar = await Calendar.create({
       owner: user.id, // Use email as owner
@@ -85,6 +99,20 @@ exports.updateCalendar = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+       // Periksa account_type dari user
+       const { acc_type, quota } = user;
+       if (acc_type !== 1 && acc_type !== 2) {
+         return res.status(403).json({ message: 'Akses tidak diizinkan' });
+       }
+   
+       if (acc_type === 2) {
+         if (quota <= 0) {
+           return res.status(403).json({ message: 'Kuota sudah habis' });
+         }
+         user.quota = user.quota - 1;
+         await user.save();
+       }
+
     // Cari kalender berdasarkan calendarId
     const calendar = await Calendar.findOne({ where: { id: calendarId } });
 
@@ -120,6 +148,20 @@ exports.deleteCalendar = async (req, res) => {
       return res.status(404).json({ message: 'Calendar not found' });
     }
 
+       // Periksa account_type dari user
+       const { acc_type, quota } = user;
+       if (acc_type !== 1 && acc_type !== 2) {
+         return res.status(403).json({ message: 'Akses tidak diizinkan' });
+       }
+   
+       if (acc_type === 2) {
+         if (quota <= 0) {
+           return res.status(403).json({ message: 'Kuota sudah habis' });
+         }
+         user.quota = user.quota - 1;
+         await user.save();
+       }
+
     // Hapus kalender
     await calendar.destroy();
 
@@ -139,6 +181,20 @@ exports.getCalendarsByOwner = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+       // Periksa account_type dari user
+       const { acc_type, quota } = user;
+       if (acc_type !== 1 && acc_type !== 2) {
+         return res.status(403).json({ message: 'Akses tidak diizinkan' });
+       }
+   
+       if (acc_type === 2) {
+         if (quota <= 0) {
+           return res.status(403).json({ message: 'Kuota sudah habis' });
+         }
+         user.quota = user.quota - 1;
+         await user.save();
+       }
 
     // Cari semua kalender yang dimiliki oleh user berdasarkan owner ID
     const calendars = await Calendar.findAll({ where: { owner: user.id }});
