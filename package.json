@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gydralionth/Project_SOA_Kalender.git"
+    "url": "git+https://github.com/stephenc20/PROJECTSOA.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Gydralionth/Project_SOA_Kalender/issues"
+    "url": "https://github.com/stephenc20/PROJECTSOA.git/issues"
   },
-  "homepage": "https://github.com/Gydralionth/Project_SOA_Kalender#readme",
+  "homepage": "",
   "devDependencies": {}
 }
