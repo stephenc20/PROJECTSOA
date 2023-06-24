@@ -140,6 +140,17 @@ exports.updateCalendar = async (req, res) => {
 exports.deleteCalendar = async (req, res) => {
   const { calendarId } = req.params;
 
+  // Validasi input calendarId
+  const schema = Joi.object({
+    calendarId: Joi.number().required(),
+  });
+
+  const { error } = schema.validate({ calendarId });
+
+  if (error) {
+    return res.status(400).json({ message: 'Invalid calendarId' });
+  }
+
   try {
     // Cari kalender berdasarkan calendarId
     const calendar = await Calendar.findOne({ where: { id: calendarId } });
@@ -148,19 +159,26 @@ exports.deleteCalendar = async (req, res) => {
       return res.status(404).json({ message: 'Calendar not found' });
     }
 
-       // Periksa account_type dari user
-       const { acc_type, quota } = user;
-       if (acc_type !== 1 && acc_type !== 2) {
-         return res.status(403).json({ message: 'Akses tidak diizinkan' });
-       }
-   
-       if (acc_type === 2) {
-         if (quota <= 0) {
-           return res.status(403).json({ message: 'Kuota sudah habis' });
-         }
-         user.quota = user.quota - 1;
-         await user.save();
-       }
+    // Cari data user berdasarkan email
+    const user = await User.findOne({ where: { email: req.email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Periksa account_type dari user
+    const { acc_type, quota } = user;
+    if (acc_type !== 1 && acc_type !== 2) {
+      return res.status(403).json({ message: 'Akses tidak diizinkan' });
+    }
+
+    if (acc_type === 2) {
+      if (quota <= 0) {
+        return res.status(403).json({ message: 'Kuota sudah habis' });
+      }
+      user.quota = user.quota - 1;
+      await user.save();
+    }
 
     // Hapus kalender
     await calendar.destroy();

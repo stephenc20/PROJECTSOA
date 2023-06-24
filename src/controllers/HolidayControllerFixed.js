@@ -130,29 +130,65 @@ exports.updateCalendarFIXED = async (req, res) => {
 exports.deleteCalendarFIXED = async (req, res) => {
   const { calendarId } = req.params;
 
-  try {
+//   try {
+//     // Cari kalender berdasarkan calendarId
+//     const calendar = await Calendar2.findOne({ where: { id: calendarId } });
+
+//     if (!calendar) {
+//       return res.status(404).json({ message: 'Kalender tidak ditemukan' });
+//     }
 
 
+//         // Periksa account_type dari user
+//         const { acc_type, quota } = user;
+//         if (acc_type !== 1 && acc_type !== 2) {
+//           return res.status(403).json({ message: 'Akses tidak diizinkan' });
+//         }
+    
+//         if (acc_type === 2) {
+//           if (quota <= 0) {
+//             return res.status(403).json({ message: 'Kuota sudah habis' });
+//           }
+//           user.quota = user.quota - 1;
+//           await user.save();
+//         }
+
+//     // Hapus kalender
+//     await calendar.destroy();
+
+//     res.json({ message: 'Data kalender berhasil dihapus' });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+
+try {
     // Cari kalender berdasarkan calendarId
     const calendar = await Calendar2.findOne({ where: { id: calendarId } });
 
     if (!calendar) {
-      return res.status(404).json({ message: 'Kalender tidak ditemukan' });
+      return res.status(404).json({ message: 'Calendar not found' });
     }
 
-        // Periksa account_type dari user
-        const { acc_type, quota } = user;
-        if (acc_type !== 1 && acc_type !== 2) {
-          return res.status(403).json({ message: 'Akses tidak diizinkan' });
-        }
-    
-        if (acc_type === 2) {
-          if (quota <= 0) {
-            return res.status(403).json({ message: 'Kuota sudah habis' });
-          }
-          user.quota = user.quota - 1;
-          await user.save();
-        }
+    // Cari data user berdasarkan email
+    const user = await User.findOne({ where: { email: req.email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Periksa account_type dari user
+    const { acc_type, quota } = user;
+    if (acc_type !== 1 && acc_type !== 2) {
+      return res.status(403).json({ message: 'Akses tidak diizinkan' });
+    }
+
+    if (acc_type === 2) {
+      if (quota <= 0) {
+        return res.status(403).json({ message: 'Kuota sudah habis' });
+      }
+      user.quota = user.quota - 1;
+      await user.save();
+    }
 
     // Hapus kalender
     await calendar.destroy();
